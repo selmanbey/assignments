@@ -1,39 +1,24 @@
-import re
+from uniquewordslib import *
 
 
 def main():
-    with open("source.txt") as source:
-        source_text = source.read()
-    source.closed
-
-    source_text = re.sub('[!@#$()1234567890½►…"%,.<>=\'\/;:*?’“”\-]', '', source_text)  # not exactly sure how this works but it does
-
-    words_list = sorted(source_text.split())
+    clear_screen()
+    print(welcome_info)
+    source_text = get_source(get_source_info)
+    words_list = clean_source(source_text)
 
     all_words = []
     repeating_words = []
 
-    for x in words_list:
-        if len(x) < 2:
-            pass
-        elif x in all_words:
-            repeating_words.append(x)
-        else:
-            all_words.append(x)
+    sort_words(words_list, all_words, repeating_words)
 
     unique_words = []
 
-    for x in all_words:
-        if x in repeating_words:
-            pass
-        else:
-            unique_words.append(x)
+    find_unique_words(all_words, repeating_words, unique_words)
+    outcome_text = clean_outcome(unique_words)
 
-    outcome_text = "\n".join(sorted(unique_words))
-
-    with open("outcome.txt", "w") as outcome:
-        outcome.write(outcome_text)
-    outcome.closed
+    create_outcome_txt(outcome_text, create_outcome_txt_info)
+    print(goodbye_info)
 
 
 if __name__ == "__main__":
