@@ -14,7 +14,12 @@ def clear_screen():
     os.system("clear")
 
 
-def get_source(message):
+def get_source(message:str)->str:
+    """Reads given source file and returns contents.
+
+    Returns:
+        str -- Contents of the file.
+    """
     print(message)
     condition = True
     while condition:
