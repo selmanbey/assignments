@@ -26,12 +26,12 @@ def get_source(message):
 
     with open(name_of_file) as source:
         source_text = source.read()
-    source.closed
+
     return source_text  # returns a string
 
 
 def clean_source(string):
-        string = re.sub('[+_E˜µ≤≥÷«‘©»∆˚¬Ω≈ç√ß∑´®†¥¨øπ‘√≈!@#$(^)123456&~|}{7890½►…"%,.<>=\'\/;:*?’“”\-]', '', string)
+        string = re.sub('[+_˜µ≤≥÷«‘©»∆˚¬Ω≈ç√ß∑´®†¥¨øπ‘√≈!@#$(^)123456&~|}{7890½►…"%,.<>=\'\/;:*?’“”\-]', '', string)
         string = string.lower()
         return sorted(string.split())  # returns a list
 
@@ -75,7 +75,7 @@ def create_outcome_txt(outcome_text, message):
         try:
             with open(name_of_file + ".txt", "w") as outcome:
                 outcome.write(outcome_text)
-            outcome.closed
+
             condition = False
         except:
             print("The name you wrote contains invalid characters. Please try another name: \n")
