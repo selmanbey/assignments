@@ -21,8 +21,6 @@ def main():
     game.board = list("_" * len(gameOfTheWord))
 
     # GAMEPLAY
-    print(gameOfTheWord)
-
     chances = 4
     gameEnd = False
 
