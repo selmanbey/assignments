@@ -3,7 +3,7 @@ from ASlibrary import *
 
 def main():
     # PRE-GAME
-    hangmanWords = []
+    hangmanWords = []  # camelCase is only for class names
     cleanSource(hangmanWords)
 
     game = Hangman()

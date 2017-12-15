@@ -4,7 +4,7 @@ import string
 import random
 
 
-class Hangman():
+class Hangman:
     hangmanDict = {}
     board = ""
 
@@ -23,32 +23,28 @@ class Hangman():
             number = input()
             try:
                 number = int(number)
+            except Exception:
+                pass
+            else:
                 if number in range(1, 4):
                     return number
                     break
                 else:
                     pass
-            except Exception:
-                pass
 
-    def chooseDifficulty(self, number):
-        gameDifficulty = ""
-        if number == 1:
-            gameDifficulty = "easy"
-        elif number == 2:
-            gameDifficulty = "normal"
-        else:
-            gameDifficulty = "hard"
-        return gameDifficulty
+    def chooseDifficulty(self, level):
+        difficulties = {
+            1: 'easy',
+            2: 'normal',
+            3: 'hard',
+        }
+
+        return difficulties.get(level, 'normal')
 
     def chooseWord(self, gameDifficulty):
-        while True:
-            word = random.choice(list(self.hangmanDict.keys()))
-            if self.hangmanDict[word] == gameDifficulty:
-                return word
-                break
-            else:
-                pass
+        candidates = [word for word, difficulty in self.hangmanDict.items()
+                      if difficulty == gameDifficulty]  # pep8
+        return random.choice(candidates)
 
     def printBoard(self):
         printedBoard = (" ").join(self.board)
@@ -96,9 +92,9 @@ def cleanSource(aList):
     for line in readSource('source.txt'):
         for word in line:
             if len(word) >= 3:
-                if word[1] == "a" or word[1] == "A":
+                if word[1].lower() == "a":
                     aList.append(word.upper())
-                elif word[len(word) - 1] == "s" or word[len(word) - 1] == "S":
+                elif word[-1].lower() == "s":
                     aList.append(word.upper())
     return aList
 
