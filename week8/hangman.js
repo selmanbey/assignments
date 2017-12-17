@@ -10,18 +10,28 @@ $('document').ready( function() {
   'official', 'palace', 'plate', 'poetry', 'policeman', 'positive', 'possible',
   'practical', 'pride', 'promise', 'recall', 'relationship', 'remarkable',
   'require', 'rhyme', 'rocky', 'rush', 'sale', 'satellite', 'satisfaction',
-  'scary', 'selection', 'shake', 'shallow', 'shout', 'silly', 'simples',
+  'scary', 'selection', 'shake', 'shallow', 'shout', 'silly', 'simple',
   'slight', 'slip', 'slope', 'soap', 'solar', 'species', 'spin', 'stiff',
   'swung', 'tale', 'thumb', 'tobacco', 'toy', 'tray', 'tune', 'university',
   'vapor', 'vessels', 'wealth', 'wolf', 'zoo'];
 
   var chances = 5;
+  var score = 0;
 
   var wordBoard = $("#word_board")
   var chancesBoard = $("#chances_board")
   var notificationBoard = $("#notification")
+  var scoreBoard = $(".score_board")
 
   chancesBoard.html(chances)
+  scoreBoard.html(score)
+
+  function colorChances(color) {
+    chancesBoard.css("color", color);
+    $("input").css("border-color", color);
+  }
+
+  colorChances("#0B5345");
 
   function createBoard(origin, guess) {
     for (i = 1; i <= origin.length; i++) {
@@ -40,15 +50,14 @@ $('document').ready( function() {
 
   createBoard(randomWord, guessedWord);
   wordBoard.html(printBoard(guessedWord));
-
-  console.log(chosenWord, guessedWord)
+  console.log(chosenWord);
 
   $("input").keypress(function (event) {
     if (event.which === 13) {
       var guessedLetter = "";
       var input = $(this).val();
+      notificationBoard.html("")
      if (/^[a-zA-Z]$/.test(input)) {
-      // console.log("got you!")
       guessedLetter = input.toUpperCase();
 
       if (repeatingLetters.includes(guessedLetter)) {
@@ -57,16 +66,15 @@ $('document').ready( function() {
         repeatingLetters.push(guessedLetter);
         if (chosenWord == "") {
         } else if (chosenWord.includes(guessedLetter)) {
-          // console.log("before guessedWord is: ", guessedWord)
           chosenWord.forEach (function (currentLetter) {
-           // while (chosenWord.includes(guessedLetter)) {
            if (guessedLetter === currentLetter) {
              var index = chosenWord.indexOf(currentLetter);
              chosenWord[index] = "_";
              guessedWord[index] = guessedLetter;
              wordBoard.html(printBoard(guessedWord));
+             score = score + 10;
+             scoreBoard.html(score)
            };
-           // };
           })
         } else {
           chances = chances - 1;
@@ -81,21 +89,20 @@ $('document').ready( function() {
       $(this).val("")
 
       switch (chances) {
+        case 5:
+          colorChances("#0B5345");
+          break;
         case 4:
-          $("span").css("color", "#229954");
-          $("input").css("border-color", "#229954");
+          colorChances("#229954");
           break;
         case 3:
-          $("span").css("color", "#F1C40F");
-          $("input").css("border-color", "#F1C40F");
+          colorChances("#F1C40F");
           break;
         case 2:
-          $("span").css("color", "#FF851B");
-          $("input").css("border-color", "#FF851B");
+          colorChances("#FF851B");
           break;
         case 1:
-          $("span").css("color", "#C70039");
-          $("input").css("border-color", "#C70039");
+          colorChances("#C70039");
           break;
       };
 
@@ -108,26 +115,38 @@ $('document').ready( function() {
         $(".gameon").css("display", "none");
         $(".word_revealed").html("The word was: ".concat(randomWord.toUpperCase()));
       };
-
-
-
-    // console.log(guessedLetter)
     };
   });
 
+  function repeatEverything(gameCondition) {
+    $(".gameoff").css("display", "none");
+    $(".gamewon").css("display", "none");
+    $(".gameon").css("display", "block");
+    chances = 5;
+    if (gameCondition) {
+    } else {
+      score = 0;
+    }
+    chancesBoard.html(chances);
+    colorChances("#0B5345");
+    scoreBoard.html(score)
+    randomWord = hangmanWords[Math.round(Math.random() * (hangmanWords.length))].toUpperCase();
+    chosenWord = randomWord.split("")
+    guessedWord = [];
+    repeatingLetters = [];
+    createBoard(randomWord, guessedWord);
+    wordBoard.html(printBoard(guessedWord));
+  };
 
+  $("button").on("click", function(event) {
+    if ($(this).hasClass("continue")) {
+      event.preventDefault();
+      repeatEverything(true);
+      ;
+    } else if ($(this).hasClass("restart")) {
+      event.preventDefault();
+      repeatEverything(false);
+    }
+  });
 
-
-  // function validate(input) {
-  //   if (/^[a-zA-Z]$/.test(input)) {
-  //     // console.log("got you!")
-  //     return input.toLowerCase();
-  //  } else {
-  //     alert("A letter and only one letter please!")
-  //  }
-  // }
-
-
-
-  // $('#board').HTML(displayWord)
 });

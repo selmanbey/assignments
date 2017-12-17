@@ -52,11 +52,17 @@ input {
   font-size: 3em;
   text-align: center;
   width: 1em;
-  border: 0.1em solid #0B5345;
+  border: 0.1em solid;
 }
 
 span {
-  color: #0B5345;
+  font-family: 'Quicksand';
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.score_board {
+  color: black;
   font-family: 'Quicksand';
   font-size: 1.5em;
   font-weight: bold;
