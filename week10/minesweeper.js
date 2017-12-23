@@ -67,7 +67,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function getNumbered(cellIDString) {
         let surroundingCells = [];
-        console.log(cellIDString)
         if (cellIDString[0] === "0") {
             let n = parseInt(cellIDString)
             let temporaryList = [];
@@ -92,31 +91,30 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         
         if (howManyMinesAround === 0) {
-            return ""
+            cell = document.getElementById(cellIDString)
+            cell.className = "empty"
         } else {
-            return String(howManyMinesAround);
+            cell = document.getElementById(cellIDString)
+            cell.className = String(howManyMinesAround);
         };
     };
-
-    cells = document.querySelectorAll("td");
-    
-    mineTracker = placeMines(30);
-    allCells = getAllIDs();
-    safeCells = findSafeCells(allCells, mineTracker);
-    console.log(mineTracker);
-    console.log(allCells)
-    console.log(safeCells)
 
     function endTheGame(safeCells) {
         mineTracker.forEach(function (element) {
             document.getElementById(element).style.cssText = "background-color: #000000";
         })
         safeCells.forEach(function(element) {
-            cellNumber = getNumbered(element);
             cell = document.getElementById(element)
-            cell.innerHTML = cellNumber;
+            if (cell.className === "empty") {
+                cell.innerHTML = ""
+            } else {
+                if (cell.className === "open") {
+                    //pass
+                } else {
+                    cell.innerHTML = cell.className;
+                }
+            }     
             cell.style.cssText = "background-color: #bed0f4";
-            cell.className = "open";
         })
         document.querySelector(".gamelost").style.cssText = "display: block";
     }
@@ -126,15 +124,16 @@ document.addEventListener("DOMContentLoaded", function() {
         
         if (mineTracker.indexOf(cellID) === -1) {
             cellNumber = getNumbered(cellID);
-            this.innerHTML = cellNumber;
-            this.style.cssText = "background-color: #bed0f4";
-            this.className = "open";
+            if (this.className === "empty") {
+                this.style.cssText = "background-color: #bed0f4";
+                this.className = "open";
+            } else {
+                this.innerHTML = this.className;
+                this.style.cssText = "background-color: #bed0f4";
+                this.className = "open";
+            }
         } else {
             this.style.cssText = "background-color: #000000";
-            // mineTracker.forEach(function (element) {
-            //     document.getElementById(element).style.cssText = "background-color: #000000";
-            // })
-            // console.log(document.querySelector(".gamelost"))
             endTheGame(safeCells)
             
         };
@@ -148,13 +147,18 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     };
 
+    cells = document.querySelectorAll("td");
+    
+    mineTracker = placeMines(30);
+    allCells = getAllIDs();
+    safeCells = findSafeCells(allCells, mineTracker);
+    allCells.forEach(function(element){
+        getNumbered(element);
+    })
+
     for (let i = 0; i < cells.length; i++) {
         cells[i].addEventListener("click", chooseCell);
         cells[i].addEventListener("contextmenu", markCell);
     };
-
- 
-
-    
 
 }); 
