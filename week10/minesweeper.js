@@ -65,23 +65,60 @@ document.addEventListener("DOMContentLoaded", function() {
         return mineTracker;
     }
 
-    function getNumbered(cellIDString) {
-        let surroundingCells = [];
-        if (cellIDString[0] === "0") {
-            let n = parseInt(cellIDString)
-            let temporaryList = [];
+
+    function findSurroundingCells(stringID) {
+        let surroundingCells = [];  // surroundingCells
+        let n = parseInt(stringID);  //numberID
+
+        if (stringID[0] === "0" && stringID[1] === "1") {
+            if (n - 1 === "100") {
+                //pass
+            } else {
+                let temporaryList = [];  
+                temporaryList.push(String(n + 1), String(n - 1), String(n + 100), String(n + 99), String(n + 101));
+                temporaryList.forEach(function(element) {
+                    surroundingCells.push("0" + element)
+                })
+            }      
+        } else if (stringID[0] === "0" && stringID[1] === "9") {
+            surroundingCells.push("0" + String(n + 1), "0" + String(n - 1), "0" + String(n - 100), "0" + String(n - 99), "0" + String(n - 101), String(n + 100), String(n + 99), String(n + 101));
+        } else if (stringID[0] === "1" && stringID[1] === "0") {
+            surroundingCells.push(String(n + 1), String(n - 1), "0" + String(n - 100), "0" + String(n - 99), "0" + String(n - 101), String(n + 100), String(n + 99), String(n + 101));
+        } else if (stringID[0] === "0") { 
+            // if (n - 99 < 100) {
+            //     surroundingCells.push(String(n + 1), String(n - 1), "0" + String(n - 100), "0" + String(n - 99), "0" + String(n - 101), String(n + 100), String(n + 99), String(n + 101));
+            // } else {
+            let temporaryList = [];  
             temporaryList.push(String(n + 1), String(n - 1), String(n - 100), String(n - 99), String(n - 101), String(n + 100), String(n + 99), String(n + 101));
             temporaryList.forEach(function(element) {
                 surroundingCells.push("0" + element)
             })
-            // console.log("ifResult:")
-            // console.log(surroundingCells)
+            // }
+        } else if (stringID[0] === "1" && stringID[1] === "5") {
+            surroundingCells.push(String(n + 1), String(n - 1), String(n - 100), String(n - 99), String(n - 101));
         } else {
-            let n = parseInt(cellIDString)
+            // if (n - 99 < 1000) {
+            //     surroundingCells.push(String(n + 1), String(n - 1), "0" + String(n - 100), "0" + String(n - 99), "0" + String(n - 101), String(n + 100), String(n + 99), String(n + 101));
+            // } else {
             surroundingCells.push(String(n + 1), String(n - 1), String(n - 100), String(n - 99), String(n - 101), String(n + 100), String(n + 99), String(n + 101));
-            // console.log("elseResult:")
-            // console.log(surroundingCells)
+            // }
         };
+        finalList = []
+        surroundingCells.forEach(function(element) {
+            if (element[2] === "1" && element[3] === "6") {
+                //pass
+            } else if (element[2] === "0" && element[3] === "0") {
+                //pass
+            } else {
+                finalList.push(element)
+            }
+        });
+
+        return finalList
+    }
+
+    function getNumbered(cellIDString) {
+        let surroundingCells = findSurroundingCells(cellIDString);;
 
         var howManyMinesAround = 0
         surroundingCells.forEach(function(element){
@@ -90,12 +127,19 @@ document.addEventListener("DOMContentLoaded", function() {
             };
         })
         
-        if (howManyMinesAround === 0) {
-            cell = document.getElementById(cellIDString)
-            cell.className = "empty"
+        cell = document.getElementById(cellIDString)
+        if (howManyMinesAround === 0) {    
+            if(mineTracker.indexOf(cellIDString) === -1) {
+                cell.className = "empty"
+            } else {
+                cell.className = "mine"
+            }    
         } else {
-            cell = document.getElementById(cellIDString)
-            cell.className = String(howManyMinesAround);
+            if(mineTracker.indexOf(cellIDString) === -1) {
+                cell.className = String(howManyMinesAround);
+            } else {
+                cell.className = "mine"
+            }
         };
     };
 
@@ -125,7 +169,7 @@ document.addEventListener("DOMContentLoaded", function() {
             if (cell.className === "empty") {
                 cell.style.cssText = "background-color: #bed0f4";
                 cell.className = "open";
-                openMultipleSafeCellsAround(stringID);
+                openMultipleCellsAround(stringID)
             } else {
                 if (cell.className === "open") {
                     //pass
@@ -136,7 +180,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
             }
         } else {
-            this.style.cssText = "background-color: #000000";
+            cell.style.cssText = "background-color: #000000";
             endTheGame(safeCells)  
         };
     };
@@ -145,80 +189,67 @@ document.addEventListener("DOMContentLoaded", function() {
     function chooseCell(){
         let cellID = this.id;
         openCell(cellID)
-        
-        // if (mineTracker.indexOf(cellID) === -1) {
-        //     if (this.className === "empty") {
-        //         this.style.cssText = "background-color: #bed0f4";
-        //         this.className = "open";
-        //         openMultipleSafeCellsAround(cellID);
-        //     } else {
-        //         this.innerHTML = this.className;
-        //         this.style.cssText = "background-color: #bed0f4";
-        //         this.className = "open";
-        //     }
-        // } else {
-        //     this.style.cssText = "background-color: #000000";
-        //     endTheGame(safeCells)
-            
-        // };
+        isGameWon = isGameWon()
+        if (isGameWon) {
+            document.querySelector(".gamewon").style.cssText = "display: block";
+        }
     };
 
     function markCell(event) {
         event.preventDefault();
-        // console.log(this.style.cssText)
         if (this.className !== "open") {
             this.style.cssText = "background-color: #900C3F";
         }
     };
 
 
-    function getOtherCellsOnSameLine(stringID) {
-        cell = document.getElementById(stringID);
-        numberID = parseInt(stringID);
-        cellsOnTheLine = [];
-
-        for (i = numberID; i > numberID - 15; i--) {
-            if (i < 1000) {
-                stringID = "0" + String(i);
-                listID = stringID.split("")
-            } else {
-                stringID = String(i)
-                listID = stringID.split("")
+    function openMultipleCellsAround(stringID) {
+        continueCondition = 1;
+        centerCell = stringID;
+        surroundingCells = findSurroundingCells(centerCell)
+        console.log("centerCell before loop", centerCell)
+        checkList = []
+        indexNumber = 0;
+        possibleNumbers = ["1", "2", "3", "4", "5", "6"]
+        while (continueCondition > 0) {
+            console.log("in while loop: ")
+            console.log(surroundingCells)
+            surroundingCells.forEach(function(element) {
+                cell = document.getElementById(element)
+                console.log(cell)
+                if (mineTracker.indexOf(element) === -1 && 
+                cell.className !== "open" &&
+                cell.className === "empty") {
+                    cell.style.cssText = "background-color: #bed0f4";
+                    cell.className = "open";
+                    checkList.push(element)
+                } else if (mineTracker.indexOf(element) === -1 &&
+                possibleNumbers.indexOf(cell.className) !== -1) {
+                    cell.innerHTML = cell.className;
+                    cell.style.cssText = "background-color: #bed0f4";
+                    cell.className = "open";
+                }; 
+            });
+            centerCell = checkList[indexNumber];
+            if (indexNumber === checkList.length) {
+                continueCondition = 0;
             }
-            if (listID[2] === "0" && listID[3] === "0") {
-                break
-            } else {
-                cellsOnTheLine.push(stringID)
-            }
-        }
-
-        for (i = numberID; i < numberID + 15; i++) {
-            if (i < 1000) {
-                stringID = "0" + String(i);
-                listID = stringID.split("")
-            } else {
-                stringID = String(i)
-                listID = stringID.split("")
-            }
-            if (listID[2] === "1" && listID[3] === "6") {
-                break
-            } else {
-                cellsOnTheLine.push(stringID)
-            }     
-        }
-        return cellsOnTheLine
+            surroundingCells = findSurroundingCells(centerCell)
+            indexNumber += 1;
+        };
     }
 
-    function openMultipleSafeCellsAround(stringID) {
-        cellsOnTheLine = getOtherCellsOnSameLine(stringID)
-        cellsOnTheLine.forEach(function(element) {
-            //for cell itself:
-            if (mineTracker.indexOf(element) === -1) {
-                openCell(element);
+    function isGameWon() {
+        safeCells.forEach(function(element) {
+            cell = document.getElementById(element);
+            if (cell.className !== "open") {
+                console.log("cell.className !== open")
+                return false
             }
         })
+        console.log("isGameWonReturnsTrue")
+        return true
     }
-
 
     /********************************************************
      * 
@@ -229,7 +260,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     cells = document.querySelectorAll("td");
     
-    mineTracker = placeMines(30);
+    mineTracker = placeMines(3);
     allCells = getAllIDs();
     safeCells = findSafeCells(allCells, mineTracker);
     allCells.forEach(function(element){

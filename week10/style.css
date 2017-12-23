@@ -23,6 +23,22 @@
     font-family: 'Work Sans', sans-serif
 }
 
+.gamewon {
+    display: none;
+    position: absolute;
+    padding: 1em;
+    text-align: center;
+    top: 163px;
+    left: 158px;
+    margin: 0 auto;
+    width: 4.5em;
+    background-color: #FFFFFF;
+    border: 3px solid rgb(6, 44, 14);
+    color: rgb(6, 44, 14);
+    font-family: 'Work Sans', sans-serif
+}
+
+
 p {
     font-family: 'Space Mono', monospace;
 }
