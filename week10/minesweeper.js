@@ -184,7 +184,7 @@ document.addEventListener("DOMContentLoaded", function() {
         openCell(cellID)
         let gamestatus = false;
         gamestatus = isGameWon();
-        console.log("isGameWon", gamestatus, typeof gamestatus)
+        // console.log("isGameWon", gamestatus, typeof gamestatus)
         if (gamestatus) {
             document.querySelector(".gamewon").style.cssText = "display: block";
         }
@@ -224,30 +224,31 @@ document.addEventListener("DOMContentLoaded", function() {
             centerCell = checkList[indexNumber];
             if (indexNumber === checkList.length) {
                 continueCondition = 0;
-            }
-            surroundingCells = findSurroundingCells(centerCell)
-            indexNumber += 1;
+            } else {
+                surroundingCells = findSurroundingCells(centerCell)
+                indexNumber += 1;
+            }   
         };
     }
 
     function isGameWon() {
-        console.log(safeCells)
+        // console.log(safeCells)
         let allCells = []
         safeCells.forEach(function(element) {
             let cell = document.getElementById(element);
-            console.log(cell)
-            console.log("cell.className !== open", cell.className !== "open")
+            // console.log(cell)
+            // console.log("cell.className !== open", cell.className !== "open")
             if (cell.className !== "open") {
-                console.log("if executed");
+                // console.log("if executed");
                 allCells.push("false")
             }
         })
-        console.log(allCells)
+        // console.log(allCells)
         if (allCells.indexOf('false') !== -1) {
-            console.log("if returns false")
+            // console.log("if returns false")
             return false
         } else {
-            console.log("else returns true")
+            // console.log("else returns true")
             return true
         }
     }
@@ -261,7 +262,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     var cells = document.querySelectorAll("td");
     
-    var mineTracker = placeMines(5);
+    var mineTracker = placeMines(10);
     var allCells = getAllIDs();
     var safeCells = findSafeCells(allCells, mineTracker);
     allCells.forEach(function(element){
