@@ -119,24 +119,48 @@ document.addEventListener("DOMContentLoaded", function() {
         document.querySelector(".gamelost").style.cssText = "display: block";
     }
 
-    function chooseCell(){
-        var cellID = this.id;
-        
-        if (mineTracker.indexOf(cellID) === -1) {
-            cellNumber = getNumbered(cellID);
-            if (this.className === "empty") {
-                this.style.cssText = "background-color: #bed0f4";
-                this.className = "open";
+    function openCell(stringID) {     
+        cell = document.getElementById(stringID)
+        if (mineTracker.indexOf(stringID) === -1) {
+            if (cell.className === "empty") {
+                cell.style.cssText = "background-color: #bed0f4";
+                cell.className = "open";
+                openMultipleSafeCellsAround(stringID);
             } else {
-                this.innerHTML = this.className;
-                this.style.cssText = "background-color: #bed0f4";
-                this.className = "open";
+                if (cell.className === "open") {
+                    //pass
+                } else {
+                    cell.innerHTML = cell.className;
+                    cell.style.cssText = "background-color: #bed0f4";
+                    cell.className = "open";
+                }
             }
         } else {
             this.style.cssText = "background-color: #000000";
-            endTheGame(safeCells)
-            
+            endTheGame(safeCells)  
         };
+    };
+
+
+    function chooseCell(){
+        let cellID = this.id;
+        openCell(cellID)
+        
+        // if (mineTracker.indexOf(cellID) === -1) {
+        //     if (this.className === "empty") {
+        //         this.style.cssText = "background-color: #bed0f4";
+        //         this.className = "open";
+        //         openMultipleSafeCellsAround(cellID);
+        //     } else {
+        //         this.innerHTML = this.className;
+        //         this.style.cssText = "background-color: #bed0f4";
+        //         this.className = "open";
+        //     }
+        // } else {
+        //     this.style.cssText = "background-color: #000000";
+        //     endTheGame(safeCells)
+            
+        // };
     };
 
     function markCell(event) {
@@ -146,6 +170,62 @@ document.addEventListener("DOMContentLoaded", function() {
             this.style.cssText = "background-color: #900C3F";
         }
     };
+
+
+    function getOtherCellsOnSameLine(stringID) {
+        cell = document.getElementById(stringID);
+        numberID = parseInt(stringID);
+        cellsOnTheLine = [];
+
+        for (i = numberID; i > numberID - 15; i--) {
+            if (i < 1000) {
+                stringID = "0" + String(i);
+                listID = stringID.split("")
+            } else {
+                stringID = String(i)
+                listID = stringID.split("")
+            }
+            if (listID[2] === "0" && listID[3] === "0") {
+                break
+            } else {
+                cellsOnTheLine.push(stringID)
+            }
+        }
+
+        for (i = numberID; i < numberID + 15; i++) {
+            if (i < 1000) {
+                stringID = "0" + String(i);
+                listID = stringID.split("")
+            } else {
+                stringID = String(i)
+                listID = stringID.split("")
+            }
+            if (listID[2] === "1" && listID[3] === "6") {
+                break
+            } else {
+                cellsOnTheLine.push(stringID)
+            }     
+        }
+        return cellsOnTheLine
+    }
+
+    function openMultipleSafeCellsAround(stringID) {
+        cellsOnTheLine = getOtherCellsOnSameLine(stringID)
+        cellsOnTheLine.forEach(function(element) {
+            //for cell itself:
+            if (mineTracker.indexOf(element) === -1) {
+                openCell(element);
+            }
+        })
+    }
+
+
+    /********************************************************
+     * 
+                            THE GAME
+     * 
+     *********************************************************/
+
 
     cells = document.querySelectorAll("td");
     
