@@ -1,0 +1,46 @@
+/* .wrapper {
+    position: relative;
+    height: 600px;
+    width: 600px;
+}
+
+.gameboard {
+    position: absolute;
+} */
+
+.gamelost {
+    display: none;
+    position: absolute;
+    padding: 1em;
+    text-align: center;
+    top: 163px;
+    left: 158px;
+    margin: 0 auto;
+    width: 4.5em;
+    background-color: #FFFFFF;
+    border: 3px solid rgb(61, 23, 15);
+    color: rgb(61, 23, 15);
+    font-family: 'Work Sans', sans-serif
+}
+
+p {
+    font-family: 'Space Mono', monospace;
+}
+
+table {
+    border: 3px solid #3f4b62;
+    border-left: 2px solid #3f4b62;
+    border-top: 2px solid #3f4b62;
+    border-spacing: 0;
+}
+
+td {
+    border: 1px solid #3f4b62;
+    border-right: 0;
+    border-bottom: 0;
+    width: 1.5em;
+    height: 1.5em;
+    background-color: #7e96c4;
+    text-align: center;
+    font-family: 'Work Sans', sans-serif;
+}
