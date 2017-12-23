@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function() {
         
         let randomId = x + y;
         
-        return randomId;    //returns a string
+        return randomId;    // returns a string
     }
 
     function placeMines(numberofMines) {
@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function findSurroundingCells(stringID) {
         let surroundingCells = [];  // surroundingCells
-        let n = parseInt(stringID);  //numberID
+        let n = parseInt(stringID);  // numberID
 
         if (stringID[0] === "0" && stringID[1] === "1") {
             if (n - 1 === "100") {
@@ -85,23 +85,16 @@ document.addEventListener("DOMContentLoaded", function() {
         } else if (stringID[0] === "1" && stringID[1] === "0") {
             surroundingCells.push(String(n + 1), String(n - 1), "0" + String(n - 100), "0" + String(n - 99), "0" + String(n - 101), String(n + 100), String(n + 99), String(n + 101));
         } else if (stringID[0] === "0") { 
-            // if (n - 99 < 100) {
-            //     surroundingCells.push(String(n + 1), String(n - 1), "0" + String(n - 100), "0" + String(n - 99), "0" + String(n - 101), String(n + 100), String(n + 99), String(n + 101));
-            // } else {
             let temporaryList = [];  
             temporaryList.push(String(n + 1), String(n - 1), String(n - 100), String(n - 99), String(n - 101), String(n + 100), String(n + 99), String(n + 101));
             temporaryList.forEach(function(element) {
                 surroundingCells.push("0" + element)
             })
-            // }
+       
         } else if (stringID[0] === "1" && stringID[1] === "5") {
             surroundingCells.push(String(n + 1), String(n - 1), String(n - 100), String(n - 99), String(n - 101));
         } else {
-            // if (n - 99 < 1000) {
-            //     surroundingCells.push(String(n + 1), String(n - 1), "0" + String(n - 100), "0" + String(n - 99), "0" + String(n - 101), String(n + 100), String(n + 99), String(n + 101));
-            // } else {
             surroundingCells.push(String(n + 1), String(n - 1), String(n - 100), String(n - 99), String(n - 101), String(n + 100), String(n + 99), String(n + 101));
-            // }
         };
         finalList = []
         surroundingCells.forEach(function(element) {
@@ -189,8 +182,10 @@ document.addEventListener("DOMContentLoaded", function() {
     function chooseCell(){
         let cellID = this.id;
         openCell(cellID)
-        isGameWon = isGameWon()
-        if (isGameWon) {
+        let gamestatus = false;
+        gamestatus = isGameWon();
+        console.log("isGameWon", gamestatus, typeof gamestatus)
+        if (gamestatus) {
             document.querySelector(".gamewon").style.cssText = "display: block";
         }
     };
@@ -207,16 +202,12 @@ document.addEventListener("DOMContentLoaded", function() {
         continueCondition = 1;
         centerCell = stringID;
         surroundingCells = findSurroundingCells(centerCell)
-        console.log("centerCell before loop", centerCell)
         checkList = []
         indexNumber = 0;
         possibleNumbers = ["1", "2", "3", "4", "5", "6"]
         while (continueCondition > 0) {
-            console.log("in while loop: ")
-            console.log(surroundingCells)
             surroundingCells.forEach(function(element) {
                 cell = document.getElementById(element)
-                console.log(cell)
                 if (mineTracker.indexOf(element) === -1 && 
                 cell.className !== "open" &&
                 cell.className === "empty") {
@@ -240,15 +231,25 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function isGameWon() {
+        console.log(safeCells)
+        let allCells = []
         safeCells.forEach(function(element) {
-            cell = document.getElementById(element);
+            let cell = document.getElementById(element);
+            console.log(cell)
+            console.log("cell.className !== open", cell.className !== "open")
             if (cell.className !== "open") {
-                console.log("cell.className !== open")
-                return false
+                console.log("if executed");
+                allCells.push("false")
             }
         })
-        console.log("isGameWonReturnsTrue")
-        return true
+        console.log(allCells)
+        if (allCells.indexOf('false') !== -1) {
+            console.log("if returns false")
+            return false
+        } else {
+            console.log("else returns true")
+            return true
+        }
     }
 
     /********************************************************
@@ -258,11 +259,11 @@ document.addEventListener("DOMContentLoaded", function() {
      *********************************************************/
 
 
-    cells = document.querySelectorAll("td");
+    var cells = document.querySelectorAll("td");
     
-    mineTracker = placeMines(3);
-    allCells = getAllIDs();
-    safeCells = findSafeCells(allCells, mineTracker);
+    var mineTracker = placeMines(5);
+    var allCells = getAllIDs();
+    var safeCells = findSafeCells(allCells, mineTracker);
     allCells.forEach(function(element){
         getNumbered(element);
     })
