@@ -1,25 +1,29 @@
-/* .wrapper {
-    position: relative;
-    height: 600px;
-    width: 600px;
+body {
+    padding: 1em;
+}
+
+.wrapper {
+    min-height: 517px;
+    min-width: 415px;
 }
 
 .gameboard {
-    position: absolute;
-} */
+    position: relative;
+}
 
 .gamelost {
     display: none;
     position: absolute;
     padding: 1em;
     text-align: center;
-    top: 163px;
-    left: 158px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     margin: 0 auto;
     width: 4.5em;
     background-color: #FFFFFF;
-    border: 3px solid rgb(61, 23, 15);
-    color: rgb(61, 23, 15);
+    border: 3px solid #520915;
+    color: #2b030a;
     font-family: 'Work Sans', sans-serif
 }
 
@@ -28,16 +32,36 @@
     position: absolute;
     padding: 1em;
     text-align: center;
-    top: 185px;
-    left: 146px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* top: 185px;
+    left: 146px; */
     margin: 0 auto;
     width: 6em;
     background-color: #FFFFFF;
-    border: 3px solid rgb(6, 44, 14);
-    color: rgb(6, 44, 14);
+    border: 3px solid #314e34;
+    color: #122013;
     font-family: 'Work Sans', sans-serif
 }
 
+h1 {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 63px;
+    text-align: center;
+    margin: 0 auto;
+    color: #3A1E2E;
+}
+
+a {
+    display: block;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 11.7px;
+    text-align: center;
+    margin: 0 auto;
+    margin-bottom: 0.7em;
+    color: #674863; 
+}
 
 p {
     font-family: 'Space Mono', monospace;
@@ -48,6 +72,7 @@ table {
     border-left: 2px solid #3f4b62;
     border-top: 2px solid #3f4b62;
     border-spacing: 0;
+    margin: 0 auto;
 }
 
 td {
