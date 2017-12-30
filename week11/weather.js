@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
 
-
+    var DOMContentJustLoaded = true;
     const button = document.getElementById("city_submit")
     const weatherDiv = document.getElementById("weather_div")
 
@@ -11,34 +11,31 @@ document.addEventListener("DOMContentLoaded", function() {
     var lat = "0"
     var long = "0"
     var coords = "?lat=" + lat + "&lon=" + long
-    getCoordinates();
 
     var urlByLocation = "http://api.openweathermap.org/data/2.5/weather" + coords + apiKey + units
     var urlByCity = "http://api.openweathermap.org/data/2.5/weather" + city + apiKey + units
- 
 
     function getCoordinates() {
         if ("geolocation" in navigator) {
-            var options = {
-                enableHighAccuracy: true,
-                timeout: 5000,
-                maximumAge: 0,
-            };
 
             function success(position) {
                 lat = String(position.coords["latitude"]);
                 long = String(position.coords["longitude"]);
                 coords = "?lat="+ lat + "&lon=" + long;
                 urlByLocation = "http://api.openweathermap.org/data/2.5/weather" + coords + apiKey + units
-                getWeather("byLocation");
+                if (DOMContentJustLoaded) {
+                    getWeather("byLocation");
+                }
             }
 
             function error() {
                 alert("We couldn't establish your location. Please enter your city manually.")
                 weatherDiv.innerHTML = "<p>404</p>"
             }
-            // navigator.geolocation.getCurrentPosition(success, error, options)
-            navigator.geolocation.watchPosition(success, error, options)
+
+            if (DOMContentJustLoaded) {
+                navigator.geolocation.watchPosition(success, error)
+            }
 
         } else {
             alert("We couldn't establish your location. Please enter your city manually.")
@@ -72,10 +69,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
             } else {
                 alert(xhr.statusText)
-            }
-         
+            }      
         };
-  
     };
 
     function getCity() {
@@ -103,18 +98,20 @@ document.addEventListener("DOMContentLoaded", function() {
     }; 
 
     function getRandomBackground() {
-        background = getRandomCityArray().join(" ▪︎ ")
-        document.getElementById("left_side").innerHTML = "<p class=\"background\">" + background + "</p>"
-        document.getElementById("right_side").innerHTML = "<p class=\"background\">" + background + "</p>"
+        background = getRandomCityArray().join(" ❂ ");
+        document.getElementById("left_side").innerHTML = "<p class=\"background\">" + background + "</p>";
+        document.getElementById("right_side").innerHTML = "<p class=\"background\">" + background + "</p>";
     }
 
-    getRandomBackground()
+    getCoordinates();
+    getRandomBackground();
 
     button.addEventListener("click", function(event) {
-        event.preventDefault()
+        event.preventDefault();
         getCity();
         getWeather("byCity");
-        getRandomBackground()
+        getRandomBackground();
+        DOMContentJustLoaded = false;
     });
     
 
