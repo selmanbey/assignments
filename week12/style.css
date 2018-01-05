@@ -1,0 +1,19 @@
+table {
+    border: 1px solid #000000;
+    border-spacing: 0;
+}
+
+tr, td {
+    border: 1px solid #000000;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+}
+
+.active_cell {
+    background-color: #ffffff;
+}
+
+.inactive_cell {
+    background-color: #cf2c2c;
+}
