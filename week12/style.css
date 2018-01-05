@@ -1,5 +1,5 @@
 table {
-    border: 1px solid #000000;
+    /* border: 1px solid #000000; */
     border-spacing: 0;
 }
 
@@ -16,4 +16,10 @@ tr, td {
 
 .inactive_cell {
     background-color: #cf2c2c;
+}
+
+.empty {
+    border: 0px;
+    width: 15px;
+    height: 15px;
 }
