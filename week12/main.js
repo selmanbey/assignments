@@ -1,12 +1,45 @@
 document.addEventListener("DOMContentLoaded", function(){
 
     const table = document.getElementById('board');
+    const gameon = document.getElementById('gameon');
+    const gameopening = document.getElementById('gameopening')
+    const gamewon = document.getElementById("gamewon")
 
     let row = 5;
     let col = 5;
     let upperLimit = 9;
 
-    function getRowNumbers(row, upperLimit) {
+    function createGrid(expression) {
+        switch(expression) {
+            case "b3":
+                row = 3;
+                col = 3;
+                break;
+            case "b4":
+                row = 4;
+                col = 4;
+                break; 
+            case "b5":
+                row = 5;
+                col = 5;
+                break; 
+            case "b6":
+                row = 6;
+                col = 6;
+                break;
+            case "b7":
+                row = 7;
+                col = 7;
+                break;    
+            case "b8":
+                row = 8;
+                col = 8;
+                break;    
+        }
+        startTheGame();
+    }
+
+    function createRowNumbers(row, upperLimit) {
         let rowNumbers = [];
 
         for (let i=0; i < row; i++) {
@@ -16,17 +49,17 @@ document.addEventListener("DOMContentLoaded", function(){
         return rowNumbers;
     };
     
-    function getGameNumbers(row, col) {
+    function createGameNumbers(row, col) {
         let gameNumbers = [];
 
         for (let i=0; i < col; i++) {
-            let rowNumbers = getRowNumbers(row, upperLimit);
+            let rowNumbers = createRowNumbers(row, upperLimit);
             gameNumbers.push(rowNumbers);
         }
         return gameNumbers;     
     }
 
-    function getGameNumbersByCol(gameNumbers) {
+    function createGameNumbersByCol(gameNumbers) {
         let gameNumbersByCol = [];
 
         for (let i = 0; i < gameNumbers.length; i++) {
@@ -49,11 +82,19 @@ document.addEventListener("DOMContentLoaded", function(){
                 tableInnerHTML += "\t<td id=\"" + String(i + 1) + String(j + 1) + "\" class=\"active_cell\">" + String(gameNumbers[i][j]) + "</td>\n";
             };
             tableInnerHTML += "<td class=\"empty\"></td>"
+            tableInnerHTML += "<td id=\"countrow" + String(i + 1) + "\" class=\"count\"></td>"
+            tableInnerHTML += "<td class=\"empty2\"></td>"
             tableInnerHTML += "<td id=\"targetrow" + String(i + 1) + "\" class=\"target\"></td>"
             tableInnerHTML += "</tr>\n";
         };
 
         tableInnerHTML += "<tr class=\"empty\"></tr>"
+
+        for (let n=0; n < col; n++) {
+            tableInnerHTML += "<td id=\"countcol" + String(n + 1) + "\" class=\"count\">\n";
+        }
+
+        tableInnerHTML += "<tr class=\"empty2\"></tr>"
 
         for (let n=0; n < col; n++) {
             tableInnerHTML += "<td id=\"targetcol" + String(n + 1) + "\" class=\"target\">\n";
@@ -62,36 +103,36 @@ document.addEventListener("DOMContentLoaded", function(){
         return tableInnerHTML;
     };
 
-    function checkTargetsForRows(gameNumbers) {
+    function createCountsForRows(gameNumbers) {
         for(let i=0; i < gameNumbers.length; i++) {
             let total = 0
             for (let j=0; j < gameNumbers[i].length; j++) {
                 total += gameNumbers[i][j]
             }
-            elementID = "targetrow" + String(i+1)
+            elementID = "countrow" + String(i+1)
             let cell = document.getElementById(elementID)
             cell.innerHTML = total 
         }        
     } 
 
-    function checkTargetsForCols(gameNumbersByCol) {
+    function createCountsForCols(gameNumbersByCol) {
         for(let i=0; i < gameNumbersByCol.length; i++) {
             let total = 0
             for (let j=0; j < gameNumbersByCol[i].length; j++) {
                 total += gameNumbersByCol[i][j]
             }
-            elementID = "targetcol" + String(i+1)
+            elementID = "countcol" + String(i+1)
             let cell = document.getElementById(elementID)
             cell.innerHTML = total 
         }   
     }
 
-    function checkAllTheTargets(gameNumbers, gameNumbersByCol) {
-        checkTargetsForRows(gameNumbers);
-        checkTargetsForCols(gameNumbersByCol);
+    function createAllTheCounts(gameNumbers, gameNumbersByCol) {
+        createCountsForRows(gameNumbers);
+        createCountsForCols(gameNumbersByCol);
     }
 
-    function visualiseCancellation(event) {
+    function deactivateCell(event) {
         cellID = String(event.id);
 
         if (event.className == "inactive_cell") {
@@ -106,53 +147,119 @@ document.addEventListener("DOMContentLoaded", function(){
         }
     }
 
+    function getIndexesForExclusion(row, col, gameNumbers) {
+        let indexesToBeExcluded = []
 
-    function cancelNumber() {
-        event = this;
-        visualiseCancellation(event);
-        // toggleNumber(event, gameNumbers, dynamicGameNumbers);
-        checkAllTheTargets(dynamicGameNumbers, dynamicGameNumbersByCol)
-    }
-
-    function toggleNumber(event, gameNumbers, dynamicGameNumbers) {
-        cellID = String(event.id);
-        
-        if (event.className == "inactive_cell") {
-            dynamicGameNumbers[parseInt(cellID[0])-1][parseInt(cellID[1]-1)] = 0;
-            console.log("active cell clicked")
-            console.log(dynamicGameNumbers[parseInt(cellID[0])-1][parseInt(cellID[1]-1)])
-        } else if (event.className == "active_cell") {
-            number = gameNumbers[parseInt(cellID[0])-1][parseInt(cellID[1]-1)];
-            console.log("inactive cell clicked")
-            console.log("number", number)
-            dynamicGameNumbers[parseInt(cellID[0])-1][parseInt(cellID[1]-1)] = number;
-            console.log("dynamic", dynamicGameNumbers[parseInt(cellID[0])-1][parseInt(cellID[1]-1)])
+        for (let i=0; i < row + col; i++) {
+            let randomNumber1 = Math.round(Math.random() * (row - 1));
+            let randomNumber2 = Math.round(Math.random() * (col - 1));
+            indexesToBeExcluded.push([randomNumber1, randomNumber2]);
         }
 
+        return indexesToBeExcluded;
+    }
+
+    function excludeNumbers(gameNumbers, indexesToBeExcluded) {  
+        indexesToBeExcluded.forEach( function(e) {
+            targets[e[0]][e[1]] = 0
+        })
+
+        indexesToBeExcluded.forEach( function(e){
+            targetsByCol[e[1]][e[0]] = 0
+        })
+    }
+
+    function createTargetsForRows(targets) {
+        for(let i=0; i < targets.length; i++) {
+            let total = 0
+            for (let j=0; j < targets[i].length; j++) {
+                total += targets[i][j]
+            }
+            elementID = "targetrow" + String(i+1)
+            let cell = document.getElementById(elementID)
+            cell.innerHTML = total 
+        }        
+    } 
+
+    function createTargetsForCols(targetsByCol) {
+        for(let i=0; i < targetsByCol.length; i++) {
+            let total = 0
+            for (let j=0; j < targetsByCol[i].length; j++) {
+                total += targetsByCol[i][j]
+            }
+            elementID = "targetcol" + String(i+1)
+            let cell = document.getElementById(elementID)
+            cell.innerHTML = total 
+        }        
+    } 
+
+    function checkDynamicWithTarget(dynamicGameNumbers, targets) {
+        for(let i = 0; i < targets.length; i++){
+            for(let j=0; j < targets[0].length; j++) {
+                console.log(i, j)
+                if (dynamicGameNumbers[i][j] !== targets[i][j]) {
+                    console.log(dynamicGameNumbers[i][j], targets[i][j])
+                    console.log("false")
+                    return false;
+                }
+            }
+        }
+        console.log("all executed, true returned")
+        return true
+        
+    }
+
+    function doAllTheThings() {
+        event = this;
+        deactivateCell(event);
+        createAllTheCounts(dynamicGameNumbers, dynamicGameNumbersByCol);
+        result = checkDynamicWithTarget(dynamicGameNumbers, targets);
+        if (result) {
+            gameon.style.display = "none"
+            gamewon.style.display = "block"
+        }
+    }
+  
+    function startTheGame() {
+        gameopening.style.display = "none"
+        gameon.style.display = "block"
     }
 
 
     /// THE GAME //////////////////////////////////////////////////////////////
+    var gameNumbers = createGameNumbers(row, col);
+    var gameNumbersByCol = createGameNumbersByCol(gameNumbers);
 
-    let gameNumbers = getGameNumbers(row, col);
-    let gameNumbersByCol = getGameNumbersByCol(gameNumbers);
-    let dynamicGameNumbers = JSON.parse(JSON.stringify(gameNumbers));
-    let dynamicGameNumbersByCol = JSON.parse(JSON.stringify(gameNumbersByCol));
+    var dynamicGameNumbers = JSON.parse(JSON.stringify(gameNumbers));
+    var dynamicGameNumbersByCol = JSON.parse(JSON.stringify(gameNumbersByCol));
+
+    var indexesToBeExcluded = getIndexesForExclusion(row, col, gameNumbers)
+    var targets = JSON.parse(JSON.stringify(gameNumbers));
+    var targetsByCol = JSON.parse(JSON.stringify(gameNumbersByCol));
+    excludeNumbers(gameNumbers, indexesToBeExcluded);
 
     table.innerHTML = createTableInnerHTML(row, col, gameNumbers); 
+    createTargetsForRows(targets);
+    createTargetsForCols(targetsByCol);
 
     var allTableCells = document.querySelectorAll("td")
     
     allTableCells.forEach(function(e){
-        e.addEventListener("click", cancelNumber);
+        e.addEventListener("click", doAllTheThings);
     });
     
+    var allGridButtons = document.querySelectorAll(".grid")
 
-    checkAllTheTargets(gameNumbers, gameNumbersByCol)
-        
+    allGridButtons.forEach(function(e){
+        expression = e.id;
+        e.addEventListener("click", function(expression) {
+            return createGrid(expression);
+        });
+    })
+
+
+    createAllTheCounts(gameNumbers, gameNumbersByCol)
     
-
-
 
 
 });
