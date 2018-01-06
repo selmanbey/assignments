@@ -1,13 +1,31 @@
 document.addEventListener("DOMContentLoaded", function(){
 
+    //// VARIABLES /////////////////////////////////////////////////////////////////
+
     const table = document.getElementById('board');
     const gameon = document.getElementById('gameon');
     const gameopening = document.getElementById('gameopening')
     const gamewon = document.getElementById("gamewon")
+    const replay = document.getElementById("replay")
+    const allGridButtons = document.querySelectorAll(".grid")
 
-    let row = 5;
-    let col = 5;
-    let upperLimit = 9;
+
+    var gameNumbers = [];
+    var gameNumbersByCol = [];
+
+    var dynamicGameNumbers = [];
+    var dynamicGameNumbersByCol = [];
+
+    var indexesToBeExcluded = [];
+    var targets = [];
+    var targetsByCol = [];
+
+    var row = 5;
+    var col = 5;
+    var upperLimit = 9;
+
+
+    //// FUNCTIONS ////////////////////////////////////////////////////////////////////
 
     function createGrid(expression) {
         switch(expression) {
@@ -34,9 +52,9 @@ document.addEventListener("DOMContentLoaded", function(){
             case "b8":
                 row = 8;
                 col = 8;
-                break;    
+                break;   
+                console.log("8x8 exectd") 
         }
-        startTheGame();
     }
 
     function createRowNumbers(row, upperLimit) {
@@ -132,21 +150,6 @@ document.addEventListener("DOMContentLoaded", function(){
         createCountsForCols(gameNumbersByCol);
     }
 
-    function deactivateCell(event) {
-        cellID = String(event.id);
-
-        if (event.className == "inactive_cell") {
-            number = gameNumbers[parseInt(cellID[0])-1][parseInt(cellID[1]-1)];
-            dynamicGameNumbers[parseInt(cellID[0])-1][parseInt(cellID[1]-1)] = number;
-            dynamicGameNumbersByCol[parseInt(cellID[1])-1][parseInt(cellID[0]-1)] =number;
-            event.className = "active_cell";
-        } else if (event.className == "active_cell") {   
-            dynamicGameNumbers[parseInt(cellID[0])-1][parseInt(cellID[1]-1)] = 0;
-            dynamicGameNumbersByCol[parseInt(cellID[1])-1][parseInt(cellID[0]-1)] = 0
-            event.className = "inactive_cell";
-        }
-    }
-
     function getIndexesForExclusion(row, col, gameNumbers) {
         let indexesToBeExcluded = []
 
@@ -209,6 +212,21 @@ document.addEventListener("DOMContentLoaded", function(){
         
     }
 
+    function deactivateCell(event) {
+        cellID = String(event.id);
+
+        if (event.className == "inactive_cell") {
+            number = gameNumbers[parseInt(cellID[0])-1][parseInt(cellID[1]-1)];
+            dynamicGameNumbers[parseInt(cellID[0])-1][parseInt(cellID[1]-1)] = number;
+            dynamicGameNumbersByCol[parseInt(cellID[1])-1][parseInt(cellID[0]-1)] =number;
+            event.className = "active_cell";
+        } else if (event.className == "active_cell") {   
+            dynamicGameNumbers[parseInt(cellID[0])-1][parseInt(cellID[1]-1)] = 0;
+            dynamicGameNumbersByCol[parseInt(cellID[1])-1][parseInt(cellID[0]-1)] = 0
+            event.className = "inactive_cell";
+        }
+    }
+
     function doAllTheThings() {
         event = this;
         deactivateCell(event);
@@ -225,41 +243,46 @@ document.addEventListener("DOMContentLoaded", function(){
         gameon.style.display = "block"
     }
 
+    function setTheGameVariables() {
+        gameNumbers = createGameNumbers(row, col);
+        gameNumbersByCol = createGameNumbersByCol(gameNumbers);
 
-    /// THE GAME //////////////////////////////////////////////////////////////
-    var gameNumbers = createGameNumbers(row, col);
-    var gameNumbersByCol = createGameNumbersByCol(gameNumbers);
+        dynamicGameNumbers = JSON.parse(JSON.stringify(gameNumbers));
+        dynamicGameNumbersByCol = JSON.parse(JSON.stringify(gameNumbersByCol));
 
-    var dynamicGameNumbers = JSON.parse(JSON.stringify(gameNumbers));
-    var dynamicGameNumbersByCol = JSON.parse(JSON.stringify(gameNumbersByCol));
+        indexesToBeExcluded = getIndexesForExclusion(row, col, gameNumbers)
+        targets = JSON.parse(JSON.stringify(gameNumbers));
+        targetsByCol = JSON.parse(JSON.stringify(gameNumbersByCol));
+        excludeNumbers(gameNumbers, indexesToBeExcluded);
 
-    var indexesToBeExcluded = getIndexesForExclusion(row, col, gameNumbers)
-    var targets = JSON.parse(JSON.stringify(gameNumbers));
-    var targetsByCol = JSON.parse(JSON.stringify(gameNumbersByCol));
-    excludeNumbers(gameNumbers, indexesToBeExcluded);
+        table.innerHTML = createTableInnerHTML(row, col, gameNumbers); 
+        createTargetsForRows(targets);
+        createTargetsForCols(targetsByCol);
 
-    table.innerHTML = createTableInnerHTML(row, col, gameNumbers); 
-    createTargetsForRows(targets);
-    createTargetsForCols(targetsByCol);
+        createAllTheCounts(gameNumbers, gameNumbersByCol)
+    }
 
-    var allTableCells = document.querySelectorAll("td")
-    
-    allTableCells.forEach(function(e){
-        e.addEventListener("click", doAllTheThings);
-    });
-    
-    var allGridButtons = document.querySelectorAll(".grid")
+
+    /// EVENT HANDLERS //////////////////////////////////////////////////////////////////
 
     allGridButtons.forEach(function(e){
-        expression = e.id;
         e.addEventListener("click", function(expression) {
-            return createGrid(expression);
+            expression = e.id;
+            createGrid(expression);
+            setTheGameVariables();
+            startTheGame();
+
+            let allTableCells = document.querySelectorAll("td")
+    
+            allTableCells.forEach(function(e){
+                e.addEventListener("click", doAllTheThings);
+            });
         });
     })
 
-
-    createAllTheCounts(gameNumbers, gameNumbersByCol)
+    replay.addEventListener("click", function(){
+        gameopening.style.display = "block";
+        gamewon.style.display = "none";
+    })
     
-
-
 });

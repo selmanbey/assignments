@@ -1,21 +1,40 @@
 table {
-    /* border: 1px solid #000000; */
-    border-spacing: 0;
+    border-spacing: 2px;
 }
 
 tr, td {
-    border: 1px solid #000000;
-    width: 30px;
-    height: 30px;
+    font-family: 'Encode Sans Expanded', sans-serif;
+    width: 28px;
+    height: 28px;
     text-align: center;
 }
 
+p {
+    font-family: 'Encode Sans Expanded', sans-serif;
+    margin: 0 auto;
+}
+
+h2 {
+    display: block;
+    font-family: 'Raleway', sans-serif;
+    margin: 0 auto;
+}
+
+button {
+    font-family: 'Montserrat', sans-serif;
+    margin: 10px;
+    width: 150px;
+    height: 20px;
+
+}
 .active_cell {
-    background-color: #ffffff;
+    background-image: url("activecell.jpg")
+
 }
 
 .inactive_cell {
-    background-color: #cf2c2c;
+    background-image: url("inactivecell.jpg");
+    background-position: center;
 }
 
 .empty {
@@ -31,11 +50,13 @@ tr, td {
 }
 
 .count {
-    background: #b8a2a2;
+    background: #802717;
+    color: #ffffff;
 }
 
 .target {
-    background: #a2b8aa;
+    background: #3F5E50;
+    color: #ffffff;
 }
 
 #gamewon {
