@@ -52,8 +52,15 @@ document.addEventListener("DOMContentLoaded", function(){
             case "b8":
                 row = 8;
                 col = 8;
-                break;   
-                console.log("8x8 exectd") 
+                break;  
+            case "b9":
+                row = 9;
+                col = 9;
+                break;  
+            case "b10":
+                row = 10;
+                col = 10;
+                break;  
         }
     }
 
@@ -121,6 +128,16 @@ document.addEventListener("DOMContentLoaded", function(){
         return tableInnerHTML;
     };
 
+    function checkTotalwithTarget(cell, target) {
+        if (cell.innerHTML == target.innerHTML) {
+            cell.style.backgroundColor = "#3F5E50"
+            console.log("success")
+        } else {
+            cell.style.backgroundColor = "#802717"
+        }
+
+    }
+
     function createCountsForRows(gameNumbers) {
         for(let i=0; i < gameNumbers.length; i++) {
             let total = 0
@@ -128,8 +145,11 @@ document.addEventListener("DOMContentLoaded", function(){
                 total += gameNumbers[i][j]
             }
             elementID = "countrow" + String(i+1)
+            targetID = "targetrow" + String(i+1)
             let cell = document.getElementById(elementID)
+            let target = document.getElementById(targetID)
             cell.innerHTML = total 
+            checkTotalwithTarget(cell, target);
         }        
     } 
 
@@ -140,8 +160,11 @@ document.addEventListener("DOMContentLoaded", function(){
                 total += gameNumbersByCol[i][j]
             }
             elementID = "countcol" + String(i+1)
+            targetID = "targetcol" + String(i+1)
             let cell = document.getElementById(elementID)
+            let target = document.getElementById(targetID)
             cell.innerHTML = total 
+            checkTotalwithTarget(cell, target);
         }   
     }
 
