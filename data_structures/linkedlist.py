@@ -7,6 +7,9 @@ class LinkedList:
     def __init__(self):
         self.first_node = None
 
+    def __str__(self):
+        return "A Linked list"
+
     def append(self, data):
         new_node = Node(data, None)
 
@@ -19,7 +22,7 @@ class LinkedList:
 
             current_node.next_node = new_node
 
-    
+
     def get(self, index):
         count = 0
         current_node = self.first_node
@@ -29,7 +32,7 @@ class LinkedList:
             else:
                 count += 1
                 current_node = current_node.next_node
-        
+
         return current_node.data
 
     def delete(self, index):
@@ -50,5 +53,5 @@ if __name__ == "__main__":
 
 
     # Append'i loop'suz calistirmanin bir yontemi var mi? (hint: last_node)
-    # Implement delete function 
+    # Implement delete function
     # Write with JavaScript

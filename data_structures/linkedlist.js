@@ -1,3 +1,9 @@
+class IndexError extends Error {
+    constructor (msg, fileName, lineNumber) {
+        super(msg, fileName, lineNumber);
+    }
+}
+
 class Node {
     constructor(value, nextNode) {
         this.value = value;
@@ -38,49 +44,57 @@ class LinkedList {
     //     }
     // }
 
-    get(index) {
-        let count = 0;
-        if (index == count) {
-            return this.firstNode.value;
-        } else {
-            let currentNode = this.firstNode;
-            while(index !== count) {
-                currentNode = currentNode.nextNode;
-                count += 1;
+    _getNode(index) {
+        try {
+            let count = 0;
+            if (index == count) {
+                return this.firstNode;
+            } else {
+                let currentNode = this.firstNode;
+                while(index !== count) {
+                    currentNode = currentNode.nextNode;
+                    count += 1;
+                }
+                return currentNode
             }
-            return currentNode.value
+        } catch (err) {
+            throw new IndexError("index exceeds length.");
         }
+    }
+
+    get(index) {
+        return this._getNode(index).value;
     }
 
     remove(index) {
-        let count = 0;
-
-        if (index == count) {
+        if (index === 0) {
+            let r = this.firstNode.value;
             this.firstNode = this.firstNode.nextNode;
-        } else {
-            let currentNode = this.firstNode;
-            let theNodeBefore;
-            while(index !== count) {
-                count += 1;
-                theNodeBefore = currentNode
-                currentNode = currentNode.nextNode;
-            }
-            theNodeBefore.nextNode = currentNode.nextNode;
+
+            return r;
         }
+
+        let theNodeBefore = this._getNode(index - 1);
+        let currentNode = theNodeBefore.nextNode;
+        theNodeBefore.nextNode = currentNode.nextNode;
+
+        return currentNode.value;
     }
 
-    print() {
-      console.log("NODES OF THIS LINKEDLIST:")
-      let nodeToPrint = this.firstNode;
-      while (nodeToPrint.nextNode != null) {
-        console.log(nodeToPrint);
-        nodeToPrint = nodeToPrint.nextNode;
-      }
-      console.log(nodeToPrint)
-      console.log("------------------------------------------")
+    toString() {
+        var r = "NODES OF THIS LINKEDLIST: \n";
+
+        let nodeToPrint = this.firstNode;
+        while (nodeToPrint.nextNode != null) {
+            r += nodeToPrint.value;
+            nodeToPrint = nodeToPrint.nextNode;
+        }
+        r += "------------------------------------------";
+
+        return r;
     }
 
-    getTheIndex(value) {
+    indexOf(value) {
       let index = 0;
       let currentNode = this.firstNode;
       if (value == currentNode.value) {
@@ -96,22 +110,28 @@ class LinkedList {
 }
 
 
-a = new LinkedList()
-console.log("a = new LinkedList()")
+// a = new LinkedList()
+// console.log("a = new LinkedList()")
 
-let element;
-for(let i = 0; i < 11; i++) {
-  a.append(`${i}th element`);
+// let element;
+// for(let i = 0; i < 11; i++) {
+//   a.append(`${i}th element`);
+// }
+
+// a.print()
+
+// console.log(`METHODS OF THIS LINKEDLIST:
+
+// append()
+// remove()
+// get()
+// getTheIndex()
+// print()
+
+// ------------------------------------------`)
+
+
+module.exports = {
+    LinkedList,
+    IndexError
 }
-
-a.print()
-
-console.log(`METHODS OF THIS LINKEDLIST:
-
-append()
-remove()
-get()
-getTheIndex()
-print()
-
-------------------------------------------`)
